@@ -1,0 +1,62 @@
+num_sim_threads = 12, num_sims = 12
+I have the random lock!
+I'm giving up the random lock!
+I've got the sim source lock!.
+x = 0.299962, y = 0.645063.
+I'm giving up the sim source lock!.
+I have the random lock!
+I'm giving up the random lock!
+I've got the sim source lock!.
+x = 0.581364, y = 0.432736.
+I'm giving up the sim source lock!.
+hello, i'm the printer!
+I have the random lock!
+I'm giving up the random lock!
+I've got the sim source lock!.
+x = 0.881307, y = 0.134160.
+I'm giving up the sim source lock!.
+I have the random lock!
+I'm giving up the random lock!
+I've got the sim source lock!.
+x = 0.506491, y = 0.817134.
+I'm giving up the sim source lock!.
+I have the random lock!
+I'm giving up the random lock!
+I've got the sim source lock!.
+x = 0.599369, y = 0.580665.
+I'm giving up the sim source lock!.
+I have the random lock!
+I'm giving up the random lock!
+I've got the sim source lock!.
+x = 0.152333, y = 0.593350.
+I'm giving up the sim source lock!.
+I have the random lock!
+I'm giving up the random lock!
+I've got the sim source lock!.
+x = 0.641500, y = 0.264990.
+I'm giving up the sim source lock!.
+I have the random lock!
+I'm giving up the random lock!
+I've got the sim source lock!.
+miss!
+I'm giving up the sim source lock!.
+I have the random lock!
+I'm giving up the random lock!
+I've got the sim source lock!.
+x = 0.242350, y = 0.116913.
+I have the random lock!
+I'm giving up the sim source lock!.
+I'm giving up the random lock!
+I've got the sim source lock!.
+x = 0.176544, y = 0.084676.
+I'm giving up the sim source lock!.
+I have the random lock!
+I'm giving up the random lock!
+I've got the sim source lock!.
+x = 0.672777, y = 0.283695.
+I'm giving up the sim source lock!.
+I have the random lock!
+I'm giving up the random lock!
+I've got the sim source lock!.
+x = 0.715388, y = 0.042864.
+I'm giving up the sim source lock!.

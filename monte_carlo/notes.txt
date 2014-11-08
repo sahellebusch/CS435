@@ -46,3 +46,4 @@ printer
 -Does the printer care that he didn't lock throws?  He just wants to read
 -Do we really need to have a print lock?  Doesn't seem necessary since the
 signaling simulation thread has stopped everything
+-do we need to consider anythin greater than a the MAX_INT?
