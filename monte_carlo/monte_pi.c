@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
+#include <time.h>
 
 #define MILLION 1000000
 
@@ -57,7 +58,7 @@ void *printer(void *argc)
       pthread_cond_wait(print_ready, print_lock);
 
     curr_estimate = (((double)hits) / darts_thrown) * 4;
-    printf("darts thrown = %i, pi: %f\n", darts_thrown, curr_estimate);
+    printf("Pi: %f\n", curr_estimate);
     can_print = -1;
     pthread_mutex_unlock(print_lock);
   }
@@ -66,6 +67,8 @@ void *printer(void *argc)
 
 int main(int argc, char *argv[])
 {
+  clock_t begin, end;
+  double exec_time;
   int num_sim_threads, i = 0;
   srand((unsigned) time(NULL));
   if(argc != 3)
@@ -86,6 +89,7 @@ int main(int argc, char *argv[])
   print_ready = (pthread_cond_t *) malloc (sizeof(pthread_cond_t));
   pthread_cond_init(print_ready, NULL);
 
+  begin = clock();
   // Create printer(consumer) threads
   pthread_t *printer_thread = (pthread_t *) malloc (sizeof(pthread_t));
 
@@ -124,6 +128,9 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Error joining simulator thread %i.\n", i);
     exit(-1);
   }
+  end = clock();  
 
+  exec_time = (double)(end - begin) / CLOCKS_PER_SEC;
+  printf("Total execution time: %f\n", exec_time); 
   exit(0);
 }
