@@ -57,7 +57,7 @@ void *printer(void *argc)
       pthread_cond_wait(print_ready, print_lock);
 
     curr_estimate = (((double)hits) / darts_thrown) * 4;
-    printf("darts thrown = %i, pi: %f\n", darts_thrown, curr_estimate);
+    printf("Pi: %f\n", curr_estimate);
     can_print = -1;
     pthread_mutex_unlock(print_lock);
   }
