@@ -1,0 +1,48 @@
+printer
+-access to throws, hits
+-access to throw_lock
+-access to global conditional var done
+ 
+ while(!done) {
+	 	while(!can_print) {
+	 		//pthreads wait till can print
+	 		// is this why we need print_lock?
+	 		pthread_cond_wait( can_print, print_lock)
+	 	}
+	 	//print because it now can
+	 	printf(whatever)
+	 	//chage can print to false
+	 	//broadcast that printer is free
+	 	pthread_cond_broadcast(can_print)
+ }
+
+
+ simulation_producer
+ while(!done) {
+ 	wait for rand
+ 	locks(rand)
+ 		do shit with rand
+ 	unlock rand
+
+ 	do math
+
+ 	wait for throws
+ 	lock throws 
+ 		increment throws 
+ 		if need to increment hits
+			increments hits
+		else nothing
+ 		if %million
+ 			set can print to true
+			wait for not can print
+		else do nothing
+	unlock throws
+
+	signal to printer it can print
+ }
+
+
+-Predicate - can we print? mutex int print_lock
+-Does the printer care that he didn't lock throws?  He just wants to read
+-Do we really need to have a print lock?  Doesn't seem necessary since the
+signaling simulation thread has stopped everything
