@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
   srand((unsigned) time(NULL));
   if(argc != 3)
   {
-    printf( "Error: Incorrect number of arguments.\n" );
+    printf("Error: Incorrect number of arguments.\n" );
     exit(-1);
   }
 
