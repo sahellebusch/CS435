@@ -1,9 +1,10 @@
 /* Author         =>  Sean Hellebusch
  * Revision       =>  1
- * Date           =>  2014-11-08
+ * Date           =>  2014-11-09
  *
  * This program simulates the Monte Carlo
  * method to find the value of pi.
+ *
  */
 
 #include <pthread.h>
@@ -22,7 +23,15 @@ pthread_mutex_t *sim_source_lock;
 pthread_mutex_t *print_lock;
 pthread_cond_t  *print_ready;
 
-void *simulator(void *argc)
+/*
+ * Function: simulator
+ *
+ * Simulates throwing a dart as per the Monte Carlo 
+ * method of finding area in a region.  Alerts the
+ * printer when it can print.
+ *
+ */
+void *simulator()
 {
   while (done < 0)
   {
@@ -32,6 +41,7 @@ void *simulator(void *argc)
     pthread_mutex_unlock(random_lock);
 
     pthread_mutex_lock(sim_source_lock);
+    
     darts_thrown++;
     if(darts_thrown == num_sims)
       done = 0;
@@ -39,28 +49,45 @@ void *simulator(void *argc)
       can_print = 0;
     if(sqrt(x*x + y*y) <= 1)
       hits++;
+    
     pthread_mutex_unlock(sim_source_lock);
     if(can_print == 0)
       pthread_cond_broadcast(print_ready);
   }
+
   pthread_exit(NULL);
 }
 
-void *printer(void *argc)
+/*
+ * Function : printer
+ *
+ * When awoken, will print out the current
+ * estimation of pi.
+ *
+ */
+void *printer()
 {
   double curr_estimate;
+
   while(done < 0)
   {
+    // lock the printer so it cannot be interrupted
     pthread_mutex_lock(print_lock);
+    
     // while we cannot print, wait and go to sleep
     while(can_print < 0 )
       pthread_cond_wait(print_ready, print_lock);
 
+    // calculate current estimate of pi
     curr_estimate = (((double)hits) / darts_thrown) * 4;
     printf("Pi: %f\n", curr_estimate);
+    
     can_print = -1;
+
+    // unlock the printer
     pthread_mutex_unlock(print_lock);
   }
+
   pthread_exit(NULL);
 }
 
@@ -68,6 +95,7 @@ int main(int argc, char *argv[])
 {
   int num_sim_threads, i = 0;
   srand((unsigned) time(NULL));
+
   if(argc != 3)
   {
     printf("Error: Incorrect number of arguments.\n" );
@@ -77,12 +105,14 @@ int main(int argc, char *argv[])
   sscanf (argv[1], "%d", &num_sim_threads);
   sscanf (argv[2], "%i", &num_sims);
 
+  // malloc the locks
   random_lock = (pthread_mutex_t *) malloc (sizeof (pthread_mutex_t));
   pthread_mutex_init(random_lock, NULL);
   sim_source_lock = (pthread_mutex_t *) malloc (sizeof (pthread_mutex_t));
   pthread_mutex_init(sim_source_lock, NULL);
   print_lock = (pthread_mutex_t *) malloc (sizeof (pthread_mutex_t));
 
+  // malloc the pthread_cond variable
   print_ready = (pthread_cond_t *) malloc (sizeof(pthread_cond_t));
   pthread_cond_init(print_ready, NULL);
 

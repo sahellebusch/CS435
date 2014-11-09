@@ -50,3 +50,4 @@ signaling simulation thread has stopped everything
 
 -do we need to consider anythin greater than a the MAX_INT?
 -do we need to have the simulator wait for the printer to be ready?  or can it freely broadcast that the pritner can print?
+-floats or doubles?
