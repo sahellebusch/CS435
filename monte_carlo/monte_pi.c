@@ -131,6 +131,6 @@ int main(int argc, char *argv[])
   end = clock();  
 
   exec_time = (double)(end - begin) / CLOCKS_PER_SEC;
-  printf("Total execution time: %f\n", exec_time); 
+  printf("%f\n", exec_time); 
   exit(0);
 }
