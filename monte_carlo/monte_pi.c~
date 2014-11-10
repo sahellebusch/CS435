@@ -52,15 +52,15 @@ void *printer(void *argc)
   double curr_estimate;
   while(done < 0)
   {
-    pthread_mutex_lock(sim_source_lock);
+    pthread_mutex_lock(print_lock);
     // while we cannot print, wait and go to sleep
     while(can_print < 0 )
-      pthread_cond_wait(print_ready, sim_source_lock);
+      pthread_cond_wait(print_ready, print_lock);
 
     curr_estimate = (((double)hits) / darts_thrown) * 4;
     printf("Pi: %f\n", curr_estimate);
     can_print = -1;
-    pthread_mutex_unlock(sim_source_lock);
+    pthread_mutex_unlock(print_lock);
   }
   pthread_exit(NULL);
 }
