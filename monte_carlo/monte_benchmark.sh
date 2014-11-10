@@ -21,9 +21,9 @@ test33=$({ time ./monte_pi 1 1000000000 >/dev/null; } |& grep real )
 
 # For really big server spaces, use this to find the 
 # system's number of processors and run it.
-# test41=$({ time ./monte_pi 1 1000000 >/dev/null; } |& grep real )
-# test42=$({ time ./monte_pi 1 10000000 >/dev/null; } |& grep real )
-# test43=$({ time ./monte_pi 1 1000000000 >/dev/null; } |& grep real )
+test41=$({ time ./monte_pi 1 1000000 >/dev/null; } |& grep real )
+test42=$({ time ./monte_pi 1 10000000 >/dev/null; } |& grep real )
+test43=$({ time ./monte_pi 1 1000000000 >/dev/null; } |& grep real )
 
 printf "Threads     Simulations            Time(s)\n"           
 printf "1             1,000,000        $test11\n"
