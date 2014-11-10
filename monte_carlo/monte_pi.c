@@ -49,10 +49,10 @@ void *simulator()
       can_print = 0;
     if(sqrt(x*x + y*y) <= 1)
       hits++;
-    
-    pthread_mutex_unlock(sim_source_lock);
     if(can_print == 0)
       pthread_cond_broadcast(print_ready);
+    pthread_mutex_unlock(sim_source_lock);
+    
   }
 
   pthread_exit(NULL);
