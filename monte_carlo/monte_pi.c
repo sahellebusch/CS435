@@ -38,11 +38,12 @@ void *simulator(void *argc)
       done = 0;
     if((darts_thrown > 0) && (darts_thrown % MILLION == 0))
       can_print = 0;
-    if(sqrt(x*x + y*y) <= 1)
+    if(sqrt(x*x  + y*y) <= 1)
       hits++;
-    pthread_mutex_unlock(sim_source_lock);
     if(can_print == 0)
       pthread_cond_broadcast(print_ready);
+    pthread_mutex_unlock(sim_source_lock);
+
   }
   pthread_exit(NULL);
 }
@@ -128,9 +129,9 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Error joining simulator thread %i.\n", i);
     exit(-1);
   }
-  end = clock();  
+  end = clock();
 
   exec_time = (double)(end - begin) / CLOCKS_PER_SEC;
-  printf("%f\n", exec_time); 
+  printf("%f\n", exec_time);
   exit(0);
 }

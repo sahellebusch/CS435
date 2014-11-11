@@ -1,0 +1,10 @@
+./monte_benchmark.sh >> sim_lock_test_results.txt
+./monte_benchmark.sh >> sim_lock_test_results.txt
+./monte_benchmark.sh >> sim_lock_test_results.txt
+./monte_benchmark.sh >> sim_lock_test_results.txt
+./monte_benchmark.sh >> sim_lock_test_results.txt
+./monte_benchmark.sh >> sim_lock_test_results.txt
+./monte_benchmark.sh >> sim_lock_test_results.txt
+./monte_benchmark.sh >> sim_lock_test_results.txt
+./monte_benchmark.sh >> sim_lock_test_results.txt
+./monte_benchmark.sh >> sim_lock_test_results.txt
