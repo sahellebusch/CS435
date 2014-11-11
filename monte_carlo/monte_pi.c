@@ -10,7 +10,6 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
 
 #define MILLION 1000000
 
@@ -48,7 +47,7 @@ void *simulator()
     if(darts_thrown == num_sims)
       done = ~done;
 
-    if(sqrt(x * x + y * y) <= 1)
+    if((x * x + y * y) <= 1)
       hits++;
 
     // if we have a multiple of a million, change condition var to
