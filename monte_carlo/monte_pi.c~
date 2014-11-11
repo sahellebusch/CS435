@@ -98,7 +98,7 @@ void *printer()
 
 int main(int argc, char *argv[])
 {
-  int num_sim_threads, i;
+  int num_sim_threads, i = 0;
   srand((unsigned) time(NULL));
 
   if(argc != 3)
