@@ -48,17 +48,19 @@ void *simulator()
     if((x * x + y * y) <= 1)
       hits++;
 
-    // if we have a multiple of a million, change condition var to
-    // satisfy printer's predicate and signal. This will termiante the
-    // printer if given a multiple of a million # of simulations
+    /* if we have a multiple of a million, change condition var to
+     * satisfy printer's predicate and signal. This will termiante the
+     * printer if given a multiple of a million # of simulations
+     */
     if((darts_thrown > 0) && (darts_thrown % MILLION == 0))
     {
       can_print = ~can_print;
       pthread_cond_signal(print_ready);
     }
 
-    // If we have a non-multiple of a million simulations, explicitly
-    // tell the printer to print one more time and join.
+    /* If we have a non-multiple of a million simulations, explicitly
+     * tell the printer to print one more time and join.
+     */
     if(darts_thrown == num_sims)
     {
       can_print = 1;
