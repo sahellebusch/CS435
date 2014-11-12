@@ -15,6 +15,7 @@
 
 int done      = 0;
 int can_print = 0;
+int odd_terminate = 0;
 int num_sims, darts_thrown, n_sim, hits;
 // mutex to protect the random number generator
 pthread_mutex_t *random_lock;
@@ -32,7 +33,7 @@ pthread_cond_t  *print_ready;
  */
 void *simulator()
 {
-  while (!done)
+  while(!done)
   {
     pthread_mutex_lock(random_lock);
 
@@ -44,9 +45,7 @@ void *simulator()
     pthread_mutex_lock(var_lock);
 
     darts_thrown++;
-    if(darts_thrown == num_sims)
-      done = ~done;
-
+      
     if((x * x + y * y) <= 1)
       hits++;
 
@@ -56,6 +55,12 @@ void *simulator()
     {
       can_print = ~can_print;
       pthread_cond_signal(print_ready);
+    }
+
+    if(darts_thrown == num_sims) {
+      done = ~done;
+      can_print = 1;
+      pthread_cond_broadcast(print_ready);
     }
 
     pthread_mutex_unlock(var_lock);
@@ -85,10 +90,18 @@ void *printer()
     while(!can_print)
       pthread_cond_wait(print_ready, var_lock);
 
-    // calculate current estimate of pi
-    curr_estimate = (((double)hits) / darts_thrown) * 4;
-    printf("Pi: %f\n", curr_estimate);
-    can_print = ~can_print;
+    if(odd_terminate)
+      pthread_exit(NULL);
+
+    if(can_print)
+    {
+      // calculate current estimate of pi
+      curr_estimate = (((double)hits) / darts_thrown) * 4;
+      printf("Pi: %f\n", curr_estimate);
+      can_print = ~can_print;
+    }
+    if(odd_terminate)
+      pthread_exit(NULL);
 
     pthread_mutex_unlock(var_lock);
   }
