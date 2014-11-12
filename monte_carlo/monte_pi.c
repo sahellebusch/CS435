@@ -93,13 +93,11 @@ void *printer()
     if(odd_terminate)
       pthread_exit(NULL);
 
-    if(can_print)
-    {
       // calculate current estimate of pi
       curr_estimate = (((double)hits) / darts_thrown) * 4;
       printf("Pi: %f\n", curr_estimate);
       can_print = ~can_print;
-    }
+    
     if(odd_terminate)
       pthread_exit(NULL);
 
