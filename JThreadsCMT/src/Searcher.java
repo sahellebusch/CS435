@@ -9,7 +9,6 @@ public class Searcher implements Runnable {
 	private int[] person1Times;
 	private int[] person2Times;
 
-
 	/**
 	 * @param times1 array of times for person 1
 	 * @param times2 array of times for person 2
@@ -24,9 +23,9 @@ public class Searcher implements Runnable {
 		findCommonMeetingTimes();
 	}
 	
-	
 	/**
-	 * 
+	 * Determines if there are any common meeting times.
+	 * Prints if a CMT exists.
 	 */
 	private void findCommonMeetingTimes() {
 		outerloop:

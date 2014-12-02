@@ -1,5 +1,5 @@
 /**
- * @author Sean
+ * @author Sean Hellebusch | sahellebusch@gmail.com
  *
  * Program determines common meetings times among
  * three people using concurrency.  The times are
