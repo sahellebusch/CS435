@@ -13,7 +13,7 @@ public class HellebuschCMT {
 	public static void main(String[] args) {
 		final int NUM_PERSONS = 3;
 		int[][] persons = new int[NUM_PERSONS][];
-		
+		int numThreads;
 		// check for correct number of arguments.
 		if(args.length < 1) {
 	        System.out.println("Error: missing argument.");
@@ -21,37 +21,36 @@ public class HellebuschCMT {
 	    }
 		
 		initializePersonsArrays(args[0], NUM_PERSONS, persons);
+		numThreads = persons[0].length;
 		
 		//create arrays to hold frames ad threads
-		Searcher[] searcher = new Searcher[NUM_PERSONS];
-		Thread[] thread = new Thread[NUM_PERSONS];
+		Searcher[] searcher = new Searcher[numThreads];
+		Thread[] thread = new Thread[numThreads];
 		
 		// create objects that will run as threads
-		for(int i = 0; i < NUM_PERSONS; i++) {
+		for(int i = 0; i < numThreads; i++) {
 			searcher[i] = new Searcher();
 		}
-		
+
 		//set searcher names and iterations
-		for(int i = 0; i < NUM_PERSONS; i++) {
-			searcher[i].setName("Searcher" + i);
-			searcher[i].setNumIterations(persons[i].length);
+		for(int i = 0; i < numThreads; i++) {
+			searcher[i].setValueToFind(persons[0][i]);
 		}
 		
 		//create the threads
-		for(int i = 0; i < NUM_PERSONS; i++) {
+		for(int i = 0; i < numThreads; i++) {
 			thread[i] = new Thread(searcher[i]);
 		}
 		
-		for(int i = 0; i < NUM_PERSONS; i++) {
-			System.out.println("Starting thread " + searcher[i].getName());
+		for(int i = 0; i < numThreads; i++) {
 			thread[i].start();
 		}
 		
-		for(int i = 0; i < NUM_PERSONS; i++) {
+		for(int i = 0; i < numThreads; i++) {
 			try {
 				thread[i].join();
 			} catch(InterruptedException e) {
-				System.out.println("Thread " + searcher[i].getName() + "failed to join.");
+				System.out.println("Thread " + i + "failed to join.");
 			}
 		}
 		
@@ -66,20 +65,20 @@ public class HellebuschCMT {
 	 */
 	private static void initializePersonsArrays(String arg,
 			final int NUM_PERSONS, int[][] persons) {
-		String[] temp_s;
+		String[] temp;
 		try {
 			Scanner scanner = new Scanner(new FileInputStream(arg));
 			for(int k = 0; k < NUM_PERSONS; k++) {
-				temp_s = scanner.nextLine().split(" ");
-				persons[k] = new int[temp_s.length-1];
-				for(int i = 1; i < temp_s.length; i++) {
-					persons[k][i-1] = Integer.parseInt(temp_s[i]);
+				temp = scanner.nextLine().split(" ");
+				persons[k] = new int[temp.length-1];
+				for(int i = 1; i < temp.length; i++) {
+					persons[k][i-1] = Integer.parseInt(temp[i]);
 				}
 			}
 			
 			scanner.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Error: File " + arg + " not found");
 			e.printStackTrace();
 		}
 	}
