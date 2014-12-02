@@ -18,8 +18,8 @@ public class HellebuschCMT {
 		int numThreads;
 		
 		// check for correct number of arguments.
-		if(args.length < 1) {
-	        System.out.println("Error: missing argument.");
+		if(args.length != 1) {
+	        System.out.println("Error: incorrect number of arguments.");
 	        System.exit(1);
 	    }
 		
@@ -32,14 +32,9 @@ public class HellebuschCMT {
 		
 		// create objects that will run as threads
 		for(int i = 0; i < numThreads; i++) {
-			searcher[i] = new Searcher(persons[1], persons[2]);
+			searcher[i] = new Searcher(persons[0][i], persons[1], persons[2]);
 		}
 
-		//set searcher names and iterations
-		for(int i = 0; i < numThreads; i++) {
-			searcher[i].setValueToFind(persons[0][i]);
-		}
-		
 		//create the threads
 		for(int i = 0; i < numThreads; i++) {
 			thread[i] = new Thread(searcher[i]);
