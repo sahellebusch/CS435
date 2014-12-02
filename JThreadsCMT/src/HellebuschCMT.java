@@ -1,19 +1,22 @@
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
-
 /**
  * @author Sean
  *
- */
+ * Program determines common meetings times among
+ * three people using concurrency.  The times are
+ * predefined in a text file.
+ *  */
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class HellebuschCMT {
 
 	public static void main(String[] args) {
 		final int NUM_PERSONS = 3;
 		int[][] persons = new int[NUM_PERSONS][];
 		int numThreads;
+		
 		// check for correct number of arguments.
 		if(args.length < 1) {
 	        System.out.println("Error: missing argument.");
@@ -29,7 +32,7 @@ public class HellebuschCMT {
 		
 		// create objects that will run as threads
 		for(int i = 0; i < numThreads; i++) {
-			searcher[i] = new Searcher();
+			searcher[i] = new Searcher(persons[1], persons[2]);
 		}
 
 		//set searcher names and iterations
@@ -42,10 +45,12 @@ public class HellebuschCMT {
 			thread[i] = new Thread(searcher[i]);
 		}
 		
+		//start the threads
 		for(int i = 0; i < numThreads; i++) {
 			thread[i].start();
 		}
 		
+		//join the threads
 		for(int i = 0; i < numThreads; i++) {
 			try {
 				thread[i].join();
@@ -53,7 +58,6 @@ public class HellebuschCMT {
 				System.out.println("Thread " + i + "failed to join.");
 			}
 		}
-		
 	}
 
 	/**
