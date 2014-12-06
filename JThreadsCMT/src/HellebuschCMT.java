@@ -16,20 +16,20 @@ public class HellebuschCMT {
 		final int NUM_PERSONS = 3;
 		int[][] persons = new int[NUM_PERSONS][];
 		int numThreads;
-		
+
 		// check for correct number of arguments.
 		if(args.length != 1) {
-	        System.out.println("Error: incorrect number of arguments.");
-	        System.exit(1);
-	    }
-		
+			System.out.println("Error: incorrect number of arguments.");
+			System.exit(1);
+		}
+
 		initializePersonsArrays(args[0], NUM_PERSONS, persons);
 		numThreads = persons[0].length;
-		
+
 		//create arrays to hold frames ad threads
 		Searcher[] searcher = new Searcher[numThreads];
 		Thread[] thread = new Thread[numThreads];
-		
+
 		// create objects that will run as threads
 		for(int i = 0; i < numThreads; i++) {
 			searcher[i] = new Searcher(persons[0][i], persons[1], persons[2]);
@@ -39,12 +39,12 @@ public class HellebuschCMT {
 		for(int i = 0; i < numThreads; i++) {
 			thread[i] = new Thread(searcher[i]);
 		}
-		
+
 		//start the threads
 		for(int i = 0; i < numThreads; i++) {
 			thread[i].start();
 		}
-		
+
 		//join the threads
 		for(int i = 0; i < numThreads; i++) {
 			try {
@@ -74,7 +74,7 @@ public class HellebuschCMT {
 					persons[k][i-1] = Integer.parseInt(temp[i]);
 				}
 			}
-			
+
 			scanner.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("Error: File " + arg + " not found");

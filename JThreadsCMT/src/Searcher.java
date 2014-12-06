@@ -22,7 +22,7 @@ public class Searcher implements Runnable {
 	public void run() {		
 		findCommonMeetingTimes();
 	}
-	
+
 	/**
 	 * Determines if there are any common meeting times.
 	 * Prints if a CMT exists.
