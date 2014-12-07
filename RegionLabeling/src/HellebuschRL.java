@@ -10,7 +10,7 @@ public class HellebuschRL {
 		int rows = 0;
 		int cols = 0;
 		int regions[][] = null;
-		int labels[][]  = null;
+		ExplicitElement labels[][]  = null;
 
 		if(args.length != 1) {
 			System.out.println("Error: incorrect number of arguments.");
@@ -32,10 +32,10 @@ public class HellebuschRL {
 		labels = initLabelMatrix(rows, cols);		
 
 		//init labelers
-		Labeler[] labeler = new Labeler[rows];
+		Cartographer[] labeler = new Cartographer[rows];
 
 		for(int i = 0; i < rows - 1; i++) {
-			labeler[i] = new Labeler(regions, labels, regions[i]);
+			labeler[i] = new Cartographer(regions, labels, regions[i]);
 		}
 
 		//init threads
@@ -47,18 +47,19 @@ public class HellebuschRL {
 		for(Thread t : thread)
 			t.start();
 	}
+	
 
 	/**
 	 * @param rows number of rows
 	 * @param cols number of columns
 	 * @return init'd matrix of labels
 	 */
-	private static int[][] initLabelMatrix(int rows, int cols) {
-		int temp[][] = new int[cols][rows];
+	private static ExplicitElement[][] initLabelMatrix(int rows, int cols) {
+		ExplicitElement[][] temp = new ExplicitElement[cols][rows];
 		int val = 0;
 		for(int i = 0; i < cols; i++) {
 			for(int k = 0; k < rows; k++) {
-				temp[i][k] = val;
+				temp[i][k] = new ExplicitElement(val);
 				val++;
 			}
 		}
