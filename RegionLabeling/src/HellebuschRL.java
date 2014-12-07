@@ -2,11 +2,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
+import javax.swing.text.ChangedCharSetException;
 
 
 public class HellebuschRL {
 
+
+
 	public static void main(String[] args) {
+		boolean changesMade = false;
+		boolean done = false;
 		int rows = 0;
 		int cols = 0;
 		int regions[][] = null;
@@ -31,45 +39,44 @@ public class HellebuschRL {
 		}
 
 		labels = initLabelMatrix(rows, cols);
-
-//		int p = 3;
-//		int numCols = 5;
-//		System.out.println(labels[3][p].get());
-//		if(!((p + 1) > (numCols - 1)))
-//			System.out.println(labels[3][p+1].get());
-//		else System.out.println("No right label");
-
-		
+	
 		//init labelers
-		Cartographer[] labeler = new Cartographer[rows];
-
-		for(int i = 0; i < rows - 1; i++) {
-			labeler[i] = new Cartographer(regions, labels, regions[i], i);
+		Cartographer[] labeler = new Cartographer[cols];
+		CyclicBarrier barrier = new CyclicBarrier(cols, new Runnable() { public void run() {
+															System.out.println("childrean have reached barrier");
+														}
+													});
+		
+		for(int i = 0; i < cols; i++) {
+			labeler[i] = new Cartographer(regions, labels, regions[i], i, barrier , done, changesMade);
 		}
 
 		//init threads
-		Thread[] thread = new Thread[rows];
-		for(int i = 0; i < rows; i++) {
+		Thread[] thread = new Thread[cols];
+		for(int i = 0; i < cols; i++) {
 			thread[i] = new Thread(labeler[i]);
 		}
 
-		for(Thread t : thread)
+		System.out.println("Num threads = " + thread.length);
+		for(Thread t : thread){
 			t.start();
+		}
+
 		
 		//join the threads
-				for(int i = 0; i < rows; i++) {
-					try {
-						thread[i].join();
-					} catch(InterruptedException e) {
-						System.out.println("Thread " + i + "failed to join.");
-					}
-				}
+		for(int i = 0; i < cols; i++) {
+			try {
+				thread[i].join();
+			} catch(InterruptedException e) {
+				System.out.println("Thread " + i + "failed to join.");
+			}
+		}
 		
 		
 		writer = new FormattedLabelPrinter(labels, cols, rows);
 		writer.print();
 		
-	}
+	}	
 	
 	
 	
@@ -110,4 +117,10 @@ public class HellebuschRL {
 		return temp;
 	}
 
+	public static boolean completed(boolean changesMade) {
+		System.out.println("Children have reached the barrier");
+		if(changesMade) 
+			return false;
+		else return true;
+	}
 }

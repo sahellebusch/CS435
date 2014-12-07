@@ -1,126 +1,136 @@
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.swing.text.ChangedCharSetException;
 
 
 public class Cartographer implements Runnable{
-	int downRegion  = -1;
-	int upRegion    = -1;
-	int leftRegion  = -1;
-	int rightRegion = -1;
+	private ExplicitElement currentLabel;
+	private ExplicitElement potentialLabel;
+	boolean madeChange;
+	private int numRows;
+	private int numCols;
+	private enum neighbor { LEFT, RIGHT, UP, DOWN }
+
 	int currRegion  = -1;
 	int regions[][];
 	ExplicitElement[][] labels;
 	int row[];
 	int rowNum;
-	private ExplicitElement currentLabel;
-	private ExplicitElement rightLabel;
-	private ExplicitElement leftLabel;
-	private ExplicitElement downLabel;
-	private ExplicitElement upLabel;
-	private boolean madeChange;
-	private int numRows;
-	private int numCols;
-	
-	public Cartographer(int[][] regions, ExplicitElement[][] labels, int[] row, int rowNum){
+	private boolean done;
+	private CyclicBarrier barrier;
+
+
+	public Cartographer(int[][] regions, ExplicitElement[][] labels, int[] row, int rowNum, CyclicBarrier barrier, boolean done, boolean changesMade){
+		this.madeChange = changesMade;
 		this.regions = regions;
 		this.labels	 = labels;
 		this.row     = row;
 		this.rowNum  = rowNum;
+		this.done = done;
+		this.barrier = barrier;
 		numCols = regions[0].length;
 		numRows = regions.length;
 	}
 
 	public void run() {		
-//		for(int i = 0; i < 4; i++) {
-//			for(int k = 0; k < 5; k++ )
-//				labels[i][k].printElement();
-//		}
+		while(!done) {
+			for(int i = 0; i < rowNum; i++) {
+				setRegionLabel(neighbor.UP,    i, rowNum, madeChange);
+				System.out.println("UP done");
+				setRegionLabel(neighbor.RIGHT, i, rowNum, madeChange);
+				System.out.println("RIGHT done");
+				setRegionLabel(neighbor.DOWN,  i, rowNum, madeChange);
+				System.out.println("DOWN done");
+				setRegionLabel(neighbor.LEFT,  i, rowNum, madeChange);
+				System.out.println("LEFT done");
+			}
 
-		for(int colNum = 0; colNum < row.length; colNum++) {
-			setLabels(colNum, rowNum);
+			try {
+				System.out.println("I'm at the barrier!");
+				barrier.await();
+			} catch (InterruptedException e) {
+				System.out.println("Error: Threads interrupted.");
+				e.printStackTrace();
+			} catch (BrokenBarrierException e) {
+				System.out.println("Error: Barrier broken.");
+				e.printStackTrace();
+			}
 		}
-//		setLabels(1, rowNum);
-		
-		
 	}
 
-	private void setLabels(int i, int j) {
-		// lock all the neighbors if they exist, get the region number
-		madeChange = false;
+
+	/**
+	 * @param neighbor enum type to see who we should check
+	 * @param i col rum
+	 * @param j row num
+	 * @param changeMade tells us if a thread made a change
+	 */
+	private void setRegionLabel(neighbor neighbor, int i, int j, boolean changeMade) {
 		currentLabel = labels[j][i];
-		currRegion = regions[j][i];
-		System.out.println("currRegion = " + currRegion);
-		// check if neighbor right
-		if(!((i + 1) > (numCols - 1))) {
-			rightLabel = labels[j][i+1];
-			rightLabel.lock();
-			System.out.println("I've got right lock");
-//			rightLabel.release();
-			rightRegion = regions[j][i+1];
-			System.out.println("rightRegion = " + rightRegion);
-		} else rightRegion = -1;
-		// check if neighbor left
-		if(!((i - 1) < 0)) {
-			leftLabel = labels[j][i-1];
-			leftLabel.lock();
-			System.out.println("I've got the left lock");
-//			leftLabel.release();
-			leftRegion = regions[j][i-1];
-		} else leftRegion = -1;
-		// check if neighbor down
-		if(!((j - 1) < 0)) {
-			downLabel = labels[j-1][i];
-			downLabel.lock();
-			System.out.println("I've got the down lock");
-//			downLabel.release();
-			downRegion = regions[j-1][i];
-		} else downRegion = -1;
-		// check if neighbor up
-		if(!((j + 1) > (numRows - 1))) {
-			upLabel = labels[j+1][i];
-			upLabel.lock();
-			System.out.println("I've got the up lock");
-//			upLabel.relsease();
-			upRegion = regions[j+1][i];
-		} else upRegion = -1;
-		
-		checkAndSetLabels();
+		currRegion   = regions[j][i];
+		switch(neighbor) {
+		case LEFT:
+			// neighbor to our left?
+			if(!((i - 1) < 0)) {
+				if(currRegion == regions[j][i-1]) {
+					potentialLabel = labels[j][i-1];
+					potentialLabel.lock();
+					setMax(potentialLabel, currentLabel, changeMade);
+					potentialLabel.release();
+				}
+			} 
+		case UP:
+			// neighbor above us?
+			if(!((j - 1) < 0)) {
+				if(currRegion == regions[j-1][i]) {
+					potentialLabel = labels[j-1][i];
+					potentialLabel.lock();
+					setMax(potentialLabel, currentLabel, changeMade);
+					potentialLabel.release();
+				}
+			} 
+			break;
+		case RIGHT:
+			// neighbor to our right?
+			if((i - 1) < (numRows - 1)) {
+				if(currRegion == regions[j][i+1]) {
+					potentialLabel = labels[j][i+1];
+					potentialLabel.lock();
+					setMax(potentialLabel, currentLabel, changeMade);
+					potentialLabel.release();
+				}
+			} 
+			break;
+		case DOWN:
+			// neighbor below us?
+			if((j + 1) < (numCols - 1)) {
+				if(currRegion == regions[j+1][i]) {
+					potentialLabel = labels[j+1][i];
+					potentialLabel.lock();
+					setMax(potentialLabel, currentLabel, changeMade);
+					potentialLabel.release();
+				}
+			}
+			break;
+		}
+
 	}
 
-	private void checkAndSetLabels() {
-		if(upRegion == currRegion) {
-			if(upLabel.get() > currentLabel.get()) {
-				currentLabel.set(upLabel.get());
-				madeChange = true;
-			} 
-		} 
-		upLabel.release();
-		if(downRegion == currRegion) {
-			if(downLabel.get() > currentLabel.get()) {
-				currentLabel.set(downLabel.get());
-				madeChange = true;
-			} 
-		} 
-		downLabel.release();
-		if(leftRegion == currRegion) {
-			System.out.println("leftRegion == currRegion");
-			if(leftLabel.get() > currentLabel.get()) {
-				currentLabel.set(leftLabel.get());
-				madeChange = true;
-			}
-		} 
-		leftLabel.release();
-		if(downRegion == currRegion) {
-			System.out.println("downRegion == currRegion");
-			if(downLabel.get() > currentLabel.get()) {
-				currentLabel.set(downLabel.get());
-				madeChange = true;
-			}
-		} 
-		downLabel.release();
-		
-//		currentLabel.release();
+	/**
+	 * @param potentialLabel the potential label who's value we may take
+	 * @param currLabel the current label
+	 * @param changeMade tell us a thread made a change
+	 */
+	private void setMax(ExplicitElement potentialLabel,
+			ExplicitElement currLabel, boolean changeMade) {
+		if(currLabel.get() < potentialLabel.get()) {
+			currLabel.set(potentialLabel.get());
+			changeMade = true;
+		}
 	}
 
 }
