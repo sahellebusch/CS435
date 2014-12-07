@@ -10,7 +10,7 @@ public class HellebuschRL {
 		int rows = 0;
 		int cols = 0;
 		int regions[][] = null;
-		int labels[][] = null;
+		int labels[][]  = null;
 
 		if(args.length != 1) {
 			System.out.println("Error: incorrect number of arguments.");
@@ -29,17 +29,24 @@ public class HellebuschRL {
 			e.printStackTrace();
 		}
 
-		labels = initLabelMatrix(rows, cols);
+		labels = initLabelMatrix(rows, cols);		
 
-		for(int i = 0; i < regions.length; i++) {	
-			System.out.println(Arrays.toString(regions[i]));
+		//init labelers
+		Labeler[] labeler = new Labeler[rows];
+
+		for(int i = 0; i < rows - 1; i++) {
+			labeler[i] = new Labeler(regions, labels, regions[i]);
 		}
-		System.out.println();
-		for(int i = 0; i < labels.length; i++) {	
-			System.out.println(Arrays.toString(labels[i]));
+
+		//init threads
+		Thread[] thread = new Thread[rows];
+		for(int i = 0; i < rows; i++) {
+			thread[i] = new Thread(labeler[i]);
 		}
+
+		for(Thread t : thread)
+			t.start();
 	}
-
 
 	/**
 	 * @param rows number of rows
@@ -57,7 +64,6 @@ public class HellebuschRL {
 		}
 		return temp;
 	}
-
 
 	/**
 	 * @param scanner scanner that has file open
