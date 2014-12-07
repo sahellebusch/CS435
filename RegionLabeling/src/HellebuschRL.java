@@ -10,7 +10,8 @@ public class HellebuschRL {
 		int rows = 0;
 		int cols = 0;
 		int regions[][] = null;
-		ExplicitElement labels[][]  = null;
+		ExplicitElement labels[][] = null;
+		FormattedLabelPrinter writer;
 
 		if(args.length != 1) {
 			System.out.println("Error: incorrect number of arguments.");
@@ -38,15 +39,21 @@ public class HellebuschRL {
 			labeler[i] = new Cartographer(regions, labels, regions[i]);
 		}
 
-		//init threads
-		Thread[] thread = new Thread[rows];
-		for(int i = 0; i < rows; i++) {
-			thread[i] = new Thread(labeler[i]);
-		}
-
-		for(Thread t : thread)
-			t.start();
+//		//init threads
+//		Thread[] thread = new Thread[rows];
+//		for(int i = 0; i < rows; i++) {
+//			thread[i] = new Thread(labeler[i]);
+//		}
+//
+//		for(Thread t : thread)
+//			t.start();
+		
+		writer = new FormattedLabelPrinter(labels, cols, rows);
+		writer.print();
+		
 	}
+	
+	
 	
 
 	/**

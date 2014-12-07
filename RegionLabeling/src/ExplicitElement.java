@@ -24,4 +24,8 @@ public class ExplicitElement {
 		System.out.println(element);
 	}
 	
+	public int get() {
+		return element;
+	}
+	
 }
