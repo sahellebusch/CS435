@@ -30,23 +30,41 @@ public class HellebuschRL {
 			e.printStackTrace();
 		}
 
-		labels = initLabelMatrix(rows, cols);		
+		labels = initLabelMatrix(rows, cols);
 
+//		int p = 3;
+//		int numCols = 5;
+//		System.out.println(labels[3][p].get());
+//		if(!((p + 1) > (numCols - 1)))
+//			System.out.println(labels[3][p+1].get());
+//		else System.out.println("No right label");
+
+		
 		//init labelers
 		Cartographer[] labeler = new Cartographer[rows];
 
 		for(int i = 0; i < rows - 1; i++) {
-			labeler[i] = new Cartographer(regions, labels, regions[i]);
+			labeler[i] = new Cartographer(regions, labels, regions[i], i);
 		}
 
-//		//init threads
-//		Thread[] thread = new Thread[rows];
-//		for(int i = 0; i < rows; i++) {
-//			thread[i] = new Thread(labeler[i]);
-//		}
-//
-//		for(Thread t : thread)
-//			t.start();
+		//init threads
+		Thread[] thread = new Thread[rows];
+		for(int i = 0; i < rows; i++) {
+			thread[i] = new Thread(labeler[i]);
+		}
+
+		for(Thread t : thread)
+			t.start();
+		
+		//join the threads
+				for(int i = 0; i < rows; i++) {
+					try {
+						thread[i].join();
+					} catch(InterruptedException e) {
+						System.out.println("Thread " + i + "failed to join.");
+					}
+				}
+		
 		
 		writer = new FormattedLabelPrinter(labels, cols, rows);
 		writer.print();
