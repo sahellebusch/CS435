@@ -1,11 +1,9 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-
-import javax.swing.text.ChangedCharSetException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class HellebuschRL {
@@ -39,13 +37,10 @@ public class HellebuschRL {
 		}
 
 		labels = initLabelMatrix(rows, cols);
-	
+		
 		//init labelers
 		Cartographer[] labeler = new Cartographer[cols];
-		CyclicBarrier barrier = new CyclicBarrier(cols, new Runnable() { public void run() {
-															System.out.println("childrean have reached barrier");
-														}
-													});
+		CyclicBarrier barrier = new CyclicBarrier(cols);
 		
 		for(int i = 0; i < cols; i++) {
 			labeler[i] = new Cartographer(regions, labels, regions[i], i, barrier , done, changesMade);
@@ -57,12 +52,10 @@ public class HellebuschRL {
 			thread[i] = new Thread(labeler[i]);
 		}
 
-		System.out.println("Num threads = " + thread.length);
 		for(Thread t : thread){
 			t.start();
 		}
 
-		
 		//join the threads
 		for(int i = 0; i < cols; i++) {
 			try {
@@ -74,13 +67,11 @@ public class HellebuschRL {
 		
 		
 		writer = new FormattedLabelPrinter(labels, cols, rows);
+
 		writer.print();
 		
 	}	
 	
-	
-	
-
 	/**
 	 * @param rows number of rows
 	 * @param cols number of columns
@@ -116,11 +107,22 @@ public class HellebuschRL {
 		}
 		return temp;
 	}
-
-	public static boolean completed(boolean changesMade) {
-		System.out.println("Children have reached the barrier");
-		if(changesMade) 
-			return false;
-		else return true;
-	}
+	
+//	void completed(boolean done, boolean changesMade) {
+//	    class Control implements Runnable {
+//	        boolean done;
+//	        boolean changesMade;
+//	        Control(boolean done, boolean changesMade) { 
+//	        	this.done = done;
+//	        	this.changesMade = changesMade;
+//	        }
+//	        public void run() {
+//	            if(!changesMade){
+//	            	done = true;
+//	            } else changesMade = false;
+//	        }
+//	    }
+//	    Thread t = new Thread(new Control(done, changesMade));
+//	    t.start();
+//	}
 }

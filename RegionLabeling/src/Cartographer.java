@@ -1,11 +1,5 @@
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.swing.text.ChangedCharSetException;
-
 
 public class Cartographer implements Runnable{
 	private ExplicitElement currentLabel;
@@ -20,11 +14,12 @@ public class Cartographer implements Runnable{
 	ExplicitElement[][] labels;
 	int row[];
 	int rowNum;
-	private boolean done;
+	boolean done;
 	private CyclicBarrier barrier;
 
 
-	public Cartographer(int[][] regions, ExplicitElement[][] labels, int[] row, int rowNum, CyclicBarrier barrier, boolean done, boolean changesMade){
+	public Cartographer(int[][] regions, ExplicitElement[][] labels, int[] row, int rowNum, 
+			CyclicBarrier barrier, boolean done, boolean changesMade){
 		this.madeChange = changesMade;
 		this.regions = regions;
 		this.labels	 = labels;
@@ -38,19 +33,14 @@ public class Cartographer implements Runnable{
 
 	public void run() {		
 		while(!done) {
-			for(int i = 0; i < rowNum; i++) {
+			for(int i = 0; i < regions[0].length; i++) {
 				setRegionLabel(neighbor.UP,    i, rowNum, madeChange);
-				System.out.println("UP done");
 				setRegionLabel(neighbor.RIGHT, i, rowNum, madeChange);
-				System.out.println("RIGHT done");
 				setRegionLabel(neighbor.DOWN,  i, rowNum, madeChange);
-				System.out.println("DOWN done");
 				setRegionLabel(neighbor.LEFT,  i, rowNum, madeChange);
-				System.out.println("LEFT done");
 			}
-
+			
 			try {
-				System.out.println("I'm at the barrier!");
 				barrier.await();
 			} catch (InterruptedException e) {
 				System.out.println("Error: Threads interrupted.");
@@ -59,6 +49,8 @@ public class Cartographer implements Runnable{
 				System.out.println("Error: Barrier broken.");
 				e.printStackTrace();
 			}
+			System.out.println("going again");
+			complete();
 		}
 	}
 
@@ -75,7 +67,7 @@ public class Cartographer implements Runnable{
 		switch(neighbor) {
 		case LEFT:
 			// neighbor to our left?
-			if(!((i - 1) < 0)) {
+			if((i - 1) >= 0) {
 				if(currRegion == regions[j][i-1]) {
 					potentialLabel = labels[j][i-1];
 					potentialLabel.lock();
@@ -85,7 +77,7 @@ public class Cartographer implements Runnable{
 			} 
 		case UP:
 			// neighbor above us?
-			if(!((j - 1) < 0)) {
+			if((j - 1) >= 0) {
 				if(currRegion == regions[j-1][i]) {
 					potentialLabel = labels[j-1][i];
 					potentialLabel.lock();
@@ -117,7 +109,6 @@ public class Cartographer implements Runnable{
 			}
 			break;
 		}
-
 	}
 
 	/**
@@ -126,10 +117,18 @@ public class Cartographer implements Runnable{
 	 * @param changeMade tell us a thread made a change
 	 */
 	private void setMax(ExplicitElement potentialLabel,
-			ExplicitElement currLabel, boolean changeMade) {
+			ExplicitElement currLabel, boolean madeChange) {
 		if(currLabel.get() < potentialLabel.get()) {
 			currLabel.set(potentialLabel.get());
-			changeMade = true;
+			madeChange = true;
+		}
+	}
+	
+	public synchronized void complete() {
+		if(!madeChange) {
+			done = true;
+		} else {
+			madeChange = false;
 		}
 	}
 
