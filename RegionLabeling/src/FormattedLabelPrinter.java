@@ -1,13 +1,10 @@
-import java.util.Arrays;
-
-
 public class FormattedLabelPrinter {
 	ExplicitElement[][] labels;
 	String line;
 	int numCols;
 	int numRows;
 	String temp;
-	int maxLength = 0;
+	int maxLength;
 
 	public FormattedLabelPrinter(ExplicitElement[][] labels, int numCols, int numRows) {
 		this.labels  = labels;
@@ -34,6 +31,9 @@ public class FormattedLabelPrinter {
 		System.out.println();
 	}
 
+	/**
+	 * @return return the max integer length
+	 */
 	private int getMaxIntLength() {
 		int max = 0;
 		for(int i = 0; i < numCols; i++) {

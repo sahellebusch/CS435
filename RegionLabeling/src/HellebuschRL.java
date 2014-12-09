@@ -2,20 +2,21 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class HellebuschRL {
-
-
+	public static AtomicBoolean changesMade = new AtomicBoolean(false);
+	public static AtomicBoolean done        = new AtomicBoolean(false);
 
 	public static void main(String[] args) {
-		boolean changesMade = true;
-		boolean done = false;
 		int rows = 0;
 		int cols = 0;
 		int regions[][] = null;
 		ExplicitElement labels[][] = null;
 		FormattedLabelPrinter writer;
+		Cartographer[] labeler;
+
 
 		if(args.length != 1) {
 			System.out.println("Error: incorrect number of arguments.");
@@ -36,12 +37,18 @@ public class HellebuschRL {
 
 		labels = initLabelMatrix(rows, cols);
 		
-		//init labelers
-		Cartographer[] labeler = new Cartographer[cols];
-		CyclicBarrier barrier = new CyclicBarrier(cols);
+		labeler = new Cartographer[cols];
+		CyclicBarrier barrier = new CyclicBarrier(cols, new Runnable() {
+			public void run() {
+				if(changesMade.get()) {
+					changesMade.set(false);
+				} else done.set(true);
+			}
+		});
+		
 		
 		for(int i = 0; i < cols; i++) {
-			labeler[i] = new Cartographer(regions, labels, regions[i], i, barrier , done, changesMade);
+			labeler[i] = new Cartographer(regions, labels, i, barrier , done, changesMade);
 		}
 
 		//init threads
