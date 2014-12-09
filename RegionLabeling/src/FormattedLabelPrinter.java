@@ -1,12 +1,12 @@
 public class FormattedLabelPrinter {
-	ExplicitElement[][] labels;
+	int[][] labels;
 	String line;
 	int numCols;
 	int numRows;
 	String temp;
 	int maxLength;
 
-	public FormattedLabelPrinter(ExplicitElement[][] labels, int numCols, int numRows) {
+	public FormattedLabelPrinter(int[][] labels, int numCols, int numRows) {
 		this.labels  = labels;
 		this.numRows = numRows;
 		this.numCols = numCols;
@@ -14,16 +14,16 @@ public class FormattedLabelPrinter {
 
 	public void print() {
 		maxLength = getMaxIntLength();
-		for(ExplicitElement[] row: labels)
+		for(int[] row: labels)
 			writeLine(row);
 	}
 	
-	private void writeLine(ExplicitElement[] row) {
+	private void writeLine(int[] row) {
 		String line = "";
 		String value;
 		int spaces;
-		for(ExplicitElement e: row) {
-			value = String.valueOf(e.get());
+		for(int e: row) {
+			value = String.valueOf(e);
 			spaces = (maxLength + 1)- value.length();
 			line = String.format("%-" + spaces + "s%s", " ", value);
 			System.out.print(line);
@@ -38,7 +38,7 @@ public class FormattedLabelPrinter {
 		int max = 0;
 		for(int i = 0; i < numCols; i++) {
 			for(int k = 0; k < numRows; k++) {
-				temp = String.valueOf(labels[i][k].get());
+				temp = String.valueOf(labels[i][k]);
 				if(temp.length() > max)
 					max = temp.length();
 			}

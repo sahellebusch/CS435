@@ -13,7 +13,7 @@ public class HellebuschRL {
 		int rows = 0;
 		int cols = 0;
 		int regions[][] = null;
-		ExplicitElement labels[][] = null;
+		int labels[][] = null;
 		FormattedLabelPrinter writer;
 		Cartographer[] labeler;
 
@@ -36,15 +36,14 @@ public class HellebuschRL {
 		}
 
 		labels = initLabelMatrix(rows, cols);
-		
 		labeler = new Cartographer[cols];
 		CyclicBarrier barrier = new CyclicBarrier(cols, new Runnable() {
-			public void run() {
-				if(changesMade.get()) {
-					changesMade.set(false);
-				} else done.set(true);
-			}
-		});
+															public void run() {
+																if(changesMade.get()) {
+																	changesMade.set(false);
+																} else done.set(true);
+															}
+														});
 		
 		
 		for(int i = 0; i < cols; i++) {
@@ -70,7 +69,6 @@ public class HellebuschRL {
 			}
 		}
 		
-		
 		writer = new FormattedLabelPrinter(labels, cols, rows);
 		writer.print();
 		
@@ -81,12 +79,12 @@ public class HellebuschRL {
 	 * @param cols number of columns
 	 * @return init'd matrix of labels
 	 */
-	private static ExplicitElement[][] initLabelMatrix(int rows, int cols) {
-		ExplicitElement[][] temp = new ExplicitElement[cols][rows];
+	private static int[][] initLabelMatrix(int rows, int cols) {
+		int[][] temp = new int[cols][rows];
 		int val = 0;
 		for(int i = 0; i < cols; i++) {
 			for(int k = 0; k < rows; k++) {
-				temp[i][k] = new ExplicitElement(val);
+				temp[i][k] = val;
 				val++;
 			}
 		}
