@@ -9,7 +9,7 @@ public class Cartographer implements Runnable{
 	private int numCols;
 	private enum neighbor { LEFT, RIGHT, UP, DOWN }
 
-	int currRegion  = -1;
+	int currRegion;
 	int regions[][];
 	ExplicitElement[][] labels;
 	int row[];
@@ -49,7 +49,6 @@ public class Cartographer implements Runnable{
 				System.out.println("Error: Barrier broken.");
 				e.printStackTrace();
 			}
-			System.out.println("going again");
 			complete();
 		}
 	}
@@ -64,6 +63,8 @@ public class Cartographer implements Runnable{
 	private void setRegionLabel(neighbor neighbor, int i, int j, boolean changeMade) {
 		currentLabel = labels[j][i];
 		currRegion   = regions[j][i];
+		
+		System.out.println("region ["+j+"]["+i+"] is "+regions[j][i]);
 		switch(neighbor) {
 		case LEFT:
 			// neighbor to our left?
@@ -88,7 +89,7 @@ public class Cartographer implements Runnable{
 			break;
 		case RIGHT:
 			// neighbor to our right?
-			if((i - 1) < (numRows - 1)) {
+			if((i + 1) < (numCols - 1)) {
 				if(currRegion == regions[j][i+1]) {
 					potentialLabel = labels[j][i+1];
 					potentialLabel.lock();
@@ -99,7 +100,7 @@ public class Cartographer implements Runnable{
 			break;
 		case DOWN:
 			// neighbor below us?
-			if((j + 1) < (numCols - 1)) {
+			if((j + 1) < (numRows - 1)) {
 				if(currRegion == regions[j+1][i]) {
 					potentialLabel = labels[j+1][i];
 					potentialLabel.lock();

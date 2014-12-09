@@ -1,9 +1,7 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class HellebuschRL {
@@ -11,7 +9,7 @@ public class HellebuschRL {
 
 
 	public static void main(String[] args) {
-		boolean changesMade = false;
+		boolean changesMade = true;
 		boolean done = false;
 		int rows = 0;
 		int cols = 0;
@@ -67,7 +65,6 @@ public class HellebuschRL {
 		
 		
 		writer = new FormattedLabelPrinter(labels, cols, rows);
-
 		writer.print();
 		
 	}	
@@ -107,22 +104,4 @@ public class HellebuschRL {
 		}
 		return temp;
 	}
-	
-//	void completed(boolean done, boolean changesMade) {
-//	    class Control implements Runnable {
-//	        boolean done;
-//	        boolean changesMade;
-//	        Control(boolean done, boolean changesMade) { 
-//	        	this.done = done;
-//	        	this.changesMade = changesMade;
-//	        }
-//	        public void run() {
-//	            if(!changesMade){
-//	            	done = true;
-//	            } else changesMade = false;
-//	        }
-//	    }
-//	    Thread t = new Thread(new Control(done, changesMade));
-//	    t.start();
-//	}
 }
