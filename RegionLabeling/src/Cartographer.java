@@ -64,7 +64,6 @@ public class Cartographer implements Runnable{
 		currentLabel = labels[j][i];
 		currRegion   = regions[j][i];
 		
-		System.out.println("region ["+j+"]["+i+"] is "+regions[j][i]);
 		switch(neighbor) {
 		case LEFT:
 			// neighbor to our left?
