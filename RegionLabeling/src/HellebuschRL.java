@@ -5,6 +5,11 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
+/**
+ * @author Sean
+ *
+ * Region labeling program.
+ */
 public class HellebuschRL {
 	public static AtomicBoolean changesMade = new AtomicBoolean(false);
 	public static AtomicBoolean done        = new AtomicBoolean(false);
