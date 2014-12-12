@@ -19,12 +19,11 @@ public class Cartographer implements Runnable{
 	private int numCols;
 	private int rowNum;
 	private int regions[][];
-	
 
 
 	public Cartographer(int[][] regions, int[][] labels, int rowNum, 
 			CyclicBarrier barrier, AtomicBoolean done, AtomicBoolean changesMade){
-		
+
 		this.madeChange = changesMade;
 		this.regions    = regions;
 		this.labels	    = labels;
@@ -39,7 +38,7 @@ public class Cartographer implements Runnable{
 		while(!done.get()) {
 
 			changeLabels();
-			
+
 			try {
 				barrier.await();
 			} catch (InterruptedException e) {
@@ -72,7 +71,7 @@ public class Cartographer implements Runnable{
 	 */
 	private void setRegionLabel(neighbor neighbor, int i, int j) {
 		int currRegion   = regions[j][i];
-		
+
 		switch(neighbor) {
 		case LEFT:
 			// neighbor to our left?
@@ -107,7 +106,7 @@ public class Cartographer implements Runnable{
 			break;
 		}
 	}
-	
+
 	/**
 	 * Function to determine the larger of two labels
 	 * 
@@ -120,7 +119,7 @@ public class Cartographer implements Runnable{
 			current = potential;
 			madeChange.set(true);
 		}
-		
+
 		return current;
 	}
 

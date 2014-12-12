@@ -1,10 +1,14 @@
+/**
+ * @author Sean
+ * 
+ * Class to print out a region labeled matrix
+ */
 public class FormattedLabelPrinter {
-	int[][] labels;
-	String line;
-	int numCols;
-	int numRows;
-	String temp;
-	int maxLength;
+	private int[][] labels;
+	private int numCols;
+	private int numRows;
+	private String temp;
+	private int maxLength;
 
 	public FormattedLabelPrinter(int[][] labels, int numCols, int numRows) {
 		this.labels  = labels;
@@ -12,12 +16,21 @@ public class FormattedLabelPrinter {
 		this.numCols = numCols;
 	} 
 
+	/**
+	 * The master print function of the class.  
+	 * Prints the entire labels matrix.
+	 */
 	public void print() {
 		maxLength = getMaxIntLength();
 		for(int[] row: labels)
 			writeLine(row);
 	}
 	
+	/**
+	 * Formats a line and prints it out
+	 * 
+	 * @param row the row to be printed
+	 */
 	private void writeLine(int[] row) {
 		String line = "";
 		String value;
