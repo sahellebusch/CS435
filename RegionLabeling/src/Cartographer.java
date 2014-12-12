@@ -5,7 +5,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Sean
  * 
- * Thread to take a row from
+ * Class that iterates and sets the labels for a given 
+ * row of a regions matrix
  *
  */
 public class Cartographer implements Runnable{
@@ -77,22 +78,14 @@ public class Cartographer implements Runnable{
 			// neighbor to our left?
 			if(!((i - 1) < 0)) {
 				if(currRegion == regions[j][i-1]) {
-					labels[j][i] = Math.max(labels[j][i], labels[j][i-1]);
-					if(labels[j][i] < labels[j][i-1]) {
-						labels[j][i] = labels[j][i-1];
-						madeChange.set(true);
-					}
+					labels[j][i] = getMax(labels[j][i], labels[j][i-1]);
 				}
 			} 
 		case UP:
 			// neighbor above us?
 			if(!((j - 1) < 0)) {
 				if(currRegion == regions[j-1][i]) {
-					labels[j][i] = Math.max(labels[j][i], labels[j-1][i]);
-					if(labels[j][i] < labels[j-1][i]) {
-						labels[j][i] = labels[j-1][i];
-						madeChange.set(true);
-					}
+					labels[j][i] = getMax(labels[j][i], labels[j-1][i]);
 				}
 			} 
 			break;
@@ -100,11 +93,7 @@ public class Cartographer implements Runnable{
 			// neighbor to our right?
 			if((i + 1) < (numCols)) {
 				if(currRegion == regions[j][i+1]) {
-					labels[j][i] = Math.max(labels[j][i], labels[j][i+1]);
-					if(labels[j][i] < labels[j][i+1]) {
-						labels[j][i] = labels[j][i+1];
-						madeChange.set(true);
-					}
+					labels[j][i] = getMax(labels[j][i], labels[j][i+1]);
 				}
 			} 
 			break;
@@ -112,15 +101,27 @@ public class Cartographer implements Runnable{
 			// neighbor below us?
 			if((j + 1) < (numRows)) {
 				if(currRegion == regions[j+1][i]) {
-					labels[j][i] = Math.max(labels[j][i], labels[j+1][i]);
-					if(labels[j][i] < labels[j+1][i]) {
-						labels[j][i] = labels[j+1][i];
-						madeChange.set(true);
-					}
+					labels[j][i] = getMax(labels[j][i], labels[j+1][i]);
 				}
 			}
 			break;
 		}
+	}
+	
+	/**
+	 * Function to determine the larger of two labels
+	 * 
+	 * @param current the current value of the label
+	 * @param potential the potential value of the label
+	 * @return the larger of the two labels
+	 */
+	private int getMax(int current, int potential) {
+		if(current < potential) {
+			current = potential;
+			madeChange.set(true);
+		}
+		
+		return current;
 	}
 
 }
