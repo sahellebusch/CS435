@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Sean
  * 
- * Thread to take a row from
+ * Thread to iterate through a row of a regions matrix and change labels
  *
  */
 public class Cartographer implements Runnable{

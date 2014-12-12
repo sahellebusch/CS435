@@ -17,7 +17,6 @@ public class HellebuschRL {
 		FormattedLabelPrinter writer;
 		Cartographer[] labeler;
 
-
 		if(args.length != 1) {
 			System.out.println("Error: incorrect number of arguments.");
 			System.out.println("Usage: java HellebuschRL <file>.");
@@ -26,13 +25,12 @@ public class HellebuschRL {
 
 		try {
 			Scanner scanner = new Scanner(new FileInputStream(args[0]));
-			cols = scanner.nextInt();
-			rows = scanner.nextInt();
+			cols    = scanner.nextInt();
+			rows    = scanner.nextInt();
 			regions = getRegionsMatrix(scanner, rows, cols);
 			scanner.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("Error: File " + args[0] + " could not be opened.");
-			e.printStackTrace();
 		}
 
 		labels = initLabelMatrix(rows, cols);
@@ -57,6 +55,7 @@ public class HellebuschRL {
 			thread[i] = new Thread(labeler[i]);
 		}
 
+		//start threads
 		for(Thread t : thread){
 			t.start();
 		}
@@ -70,13 +69,14 @@ public class HellebuschRL {
 			}
 		}
 		
-		
+		//print out the region labels
 		writer = new FormattedLabelPrinter(labels, cols, rows);
 		writer.print();
-		
 	}	
 	
 	/**
+	 * Initializes the labels matrix with sequential ints
+	 * 
 	 * @param rows number of rows
 	 * @param cols number of columns
 	 * @return init'd matrix of labels
@@ -94,6 +94,8 @@ public class HellebuschRL {
 	}
 
 	/**
+	 * Reads in the text file regions into a matrix
+	 * 
 	 * @param scanner scanner that has file open
 	 * @param x width of the regions matrix
 	 * @param y depth of the regions matrix
