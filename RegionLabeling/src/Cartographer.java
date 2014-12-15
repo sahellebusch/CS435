@@ -26,12 +26,12 @@ public class Cartographer implements Runnable{
 
 		this.madeChange = changesMade;
 		this.regions    = regions;
-		this.labels	    = labels;
+		this.labels	= labels;
 		this.rowNum     = rowNum;
 		this.done       = done;
 		this.barrier    = barrier;
-		numCols 		= regions[0].length;
-		numRows 		= regions.length;
+		numCols 	= regions[0].length;
+		numRows 	= regions.length;
 	}
 
 	public void run() {		
